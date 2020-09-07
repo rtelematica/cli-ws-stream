@@ -35,6 +35,10 @@ function connect() {
         stompClient.subscribe('/topic/validate-otp-speech', function (validateOptSpeech) {
           showValidateOtpSpeech(validateOptSpeech.body);
         });
+        stompClient.subscribe('/topic/face-recognition', function (validateOptSpeech) {
+            showFaceRecognition(validateOptSpeech.body);
+        });
+
     });
 }
 
@@ -66,6 +70,9 @@ function sendValidateOtpSpeech() {
   stompClient.send("/api/ws/flows/streams/steps/_validate_otp_speech", {}, JSON.stringify({'flowId': "1234", "streamId": $("#vosStreamId").val()}));
 }
 
+function sendFaceRecognition() {
+    stompClient.send("/api/ws/flows/streams/steps/_face_recognition", {}, JSON.stringify({'flowId': "1234", "streamId": $("#frStreamId").val()}));
+}
 
 function showGreeting(message) {
     $("#greetings").append("<tr><td>" + message + "</td></tr>");
@@ -87,6 +94,10 @@ function showValidateOtpSpeech(message) {
   $("#vosResponse").append("<tr><td>" + message + "</td></tr>");
 }
 
+function showFaceRecognition(message) {
+    $("#frResponse").append("<tr><td>" + message + "</td></tr>");
+}
+
 
 $(function () {
     $("form").on('submit', function (e) {
@@ -99,5 +110,6 @@ $(function () {
     $( "#sendVideoQuality" ).click(function() { sendVideoQuality(); });
     $( "#sendIdsFrontExtractor" ).click(function() { sendIdsFrontExtractor(); });
     $( "#sendValidateOtpSpeech" ).click(function() { sendValidateOtpSpeech(); });
+    $( "#sendFaceRecognition" ).click(function() { sendFaceRecognition(); });
 });
 
