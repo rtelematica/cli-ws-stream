@@ -1,6 +1,9 @@
 package com.walkoding.cliwsstream;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.nova.orto.cognitiveservice.CognitiveResponse;
 import com.nova.orto.cognitiveservice.Data;
 import com.nova.orto.cognitiveservice.Indicator;
@@ -149,44 +152,63 @@ public class FlowStepStreamWS {
         log.debug("REST request to step FaceRecognition: {}", flowStreamDTO);
 
         try {
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
             Thread.sleep(1000);
-            CognitiveResponse response = CognitiveResponse.newBuilder()
-                    .setType(CognitiveResponse.Type.INDICATOR)
-                    .setIndicator(Indicator.newBuilder().setType(1).setMessage("Starting cognitive process").build()).build();
-            log.debug("CS FaceRecognition Response: {}", response);
-            simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + response);
+            CognitiveWSResponse wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 1;
+            wsRes.indicator.message = "Starting cognitive process";
+            String json = ow.writeValueAsString(wsRes);
+            System.out.println("CS FaceRecognition Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + json);
 
             for(int i = 0; i < 9; i++) {
                 Thread.sleep(1000);
-                response = CognitiveResponse.newBuilder()
-                        .setType(CognitiveResponse.Type.INDICATOR)
-                        .setIndicator(Indicator.newBuilder().setType(5).setMessage("Error: Empty source").build()).build();
-                log.debug("CS FaceRecognition Response: {}", response);
-                simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + response);
+                wsRes = new CognitiveWSResponse();
+                wsRes.type = CType.INDICATOR;
+                wsRes.indicator = new WIndicator();
+                wsRes.indicator.type = 5;
+                wsRes.indicator.message = "Error: Empty source";
+                json = ow.writeValueAsString(wsRes);
+                System.out.println("CS FaceRecognition Response: " + json);
+                simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + json);
             }
 
             Thread.sleep(1000);
-            response = CognitiveResponse.newBuilder()
-                    .setType(CognitiveResponse.Type.INDICATOR)
-                    .setIndicator(Indicator.newBuilder().setType(3).setMessage("Start processing of frames").build()).build();
-            log.debug("CS FaceRecognition Response: {}", response);
-            simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + response);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 3;
+            wsRes.indicator.message = "Start processing of frames";
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS FaceRecognition Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + json);
 
             Thread.sleep(1000);
-            response = CognitiveResponse.newBuilder()
-                    .setType(CognitiveResponse.Type.DATA)
-                    .setData(Data.newBuilder().setDataJSON("{\"success\": true}").build()).build();
-            log.debug("CS FaceRecognition Response: {}", response);
-            simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + response);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.DATA;
+            wsRes.data = new WData();
+            wsRes.data.dataJSON = new DataJSON();
+            wsRes.data.dataJSON.success = true;
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS FaceRecognition Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/face-recognition", json);
 
             Thread.sleep(1000);
-            response = CognitiveResponse.newBuilder()
-                    .setType(CognitiveResponse.Type.INDICATOR)
-                    .setIndicator(Indicator.newBuilder().setType(3).setMessage("Start processing of frames").build()).build();
-            log.debug("CS FaceRecognition Response: {}", response);
-            simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + response);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 6;
+            wsRes.indicator.message = "End of cognitive process";
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS FaceRecognition Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + json);
 
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch(JsonProcessingException e) {
             e.printStackTrace();
         }
     }
@@ -225,5 +247,31 @@ public class FlowStepStreamWS {
 //            log.debug("CS Response: {}", response);
 //            simpMessagingTemplate.convertAndSend("/topic/validate-otp-speech", "Ids Face Recognition Response: " + response);
 //        }
+    }
+
+    public enum CType {
+        DATA,
+        LOG,
+        INDICATOR;
+    }
+
+    public static class CognitiveWSResponse {
+
+        public CType type;
+        public WIndicator indicator;
+        public WData data;
+    }
+
+    public static class WIndicator {
+        public int type;
+        public String message;
+    }
+
+    public static class WData {
+        public DataJSON dataJSON;
+    }
+
+    public static class DataJSON {
+        public boolean success;
     }
 }
