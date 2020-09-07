@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.nova.orto.cognitiveservice";
+option java_outer_classname = "CognitiveServiceProto";
+option objc_class_prefix = "RTG";
+
+package cognitiveservice;
+
+service CognitiveService {
+
+    rpc Process(CognitiveRequest) returns (stream CognitiveResponse) {}
+
+}
+
+message  CognitiveRequest {
+
+    enum Type {
+        PROOF_LIVE = 0;
+        FACE_RECOGNITION = 1;
+        IDS_EXTRACTOR = 2;
+        SPEECH_TEXT = 3;
+        ADDRESS_EXTRACTOR = 4;
+        VIDEO_QUALITY = 5;
+    }
+
+    string streamId = 1;
+    int32 timeout = 2;  // En segundos
+    bool logEnabled = 3;
+    string rtmpUrl = 4;
+    Type type = 5;
+}
+
+message  CognitiveResponse {
+
+    enum Type {
+        DATA = 0;
+        LOG = 1;
+        INDICATOR = 2;
+    }
+
+    Type type = 1;
+    Log log = 2;
+    Indicator indicator = 3;
+    Data data = 4;
+}
+
+message Log {
+    string message = 1;
+}
+
+message Indicator {
+    int32 type = 1;
+    string message = 2;
+}
+
+message Data {
+    string dataJSON = 1;
+    repeated Entry mapEntry = 2;
+}
+
+message Entry {
+    string key = 1;
+    repeated bytes value = 2;
+}
