@@ -186,7 +186,7 @@ public class FlowStepStreamWS {
             System.out.println("CS FaceRecognition Response: " + json);
             simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + json);
 
-            Thread.sleep(3000);
+            Thread.sleep(5000);
             wsRes = new CognitiveWSResponse();
             wsRes.type = CType.DATA;
             wsRes.data = new WData();
@@ -196,7 +196,7 @@ public class FlowStepStreamWS {
             System.out.println("CS FaceRecognition Response: " + json);
             simpMessagingTemplate.convertAndSend("/topic/face-recognition", json);
 
-            Thread.sleep(2000);
+            Thread.sleep(4000);
             wsRes = new CognitiveWSResponse();
             wsRes.type = CType.INDICATOR;
             wsRes.indicator = new WIndicator();
