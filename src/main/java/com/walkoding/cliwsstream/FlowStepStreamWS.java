@@ -164,17 +164,17 @@ public class FlowStepStreamWS {
             System.out.println("CS FaceRecognition Response: " + json);
             simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + json);
 
-            for(int i = 0; i < 9; i++) {
-                Thread.sleep(1000);
-                wsRes = new CognitiveWSResponse();
-                wsRes.type = CType.INDICATOR;
-                wsRes.indicator = new WIndicator();
-                wsRes.indicator.type = 5;
-                wsRes.indicator.message = "Error: Empty source";
-                json = ow.writeValueAsString(wsRes);
-                System.out.println("CS FaceRecognition Response: " + json);
-                simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + json);
-            }
+//            for(int i = 0; i < 9; i++) {
+//                Thread.sleep(1000);
+//                wsRes = new CognitiveWSResponse();
+//                wsRes.type = CType.INDICATOR;
+//                wsRes.indicator = new WIndicator();
+//                wsRes.indicator.type = 5;
+//                wsRes.indicator.message = "Error: Empty source";
+//                json = ow.writeValueAsString(wsRes);
+//                System.out.println("CS FaceRecognition Response: " + json);
+//                simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + json);
+//            }
 
             Thread.sleep(1000);
             wsRes = new CognitiveWSResponse();
@@ -186,7 +186,7 @@ public class FlowStepStreamWS {
             System.out.println("CS FaceRecognition Response: " + json);
             simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + json);
 
-            Thread.sleep(1000);
+            Thread.sleep(3000);
             wsRes = new CognitiveWSResponse();
             wsRes.type = CType.DATA;
             wsRes.data = new WData();
@@ -196,7 +196,7 @@ public class FlowStepStreamWS {
             System.out.println("CS FaceRecognition Response: " + json);
             simpMessagingTemplate.convertAndSend("/topic/face-recognition", json);
 
-            Thread.sleep(1000);
+            Thread.sleep(2000);
             wsRes = new CognitiveWSResponse();
             wsRes.type = CType.INDICATOR;
             wsRes.indicator = new WIndicator();
