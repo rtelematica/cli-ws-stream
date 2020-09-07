@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello WebSocket</title>
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static_/main.css" rel="stylesheet">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/static_/app.js"></script>
+
+</head>
+<body>
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+<div id="main-content" class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="connect">WebSocket connection:</label>
+                    <button id="connect" class="btn btn-default" type="submit">Connect</button>
+                    <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="name">What is your name?</label>
+                    <input type="text" id="name" class="form-control" placeholder="Your name here...">
+                </div>
+                <button id="send" class="btn btn-default" type="submit">Send</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <table id="conversation" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Greetings</th>
+                </tr>
+                </thead>
+                <tbody id="greetings">
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="name">Video Quality:</label>
+                    <input type="text" id="vqStreamId" class="form-control" placeholder="streamId">
+                </div>
+                <button id="sendVideoQuality" class="btn btn-default" type="submit">Send</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <table id="videoQualityResponse" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Video Quality</th>
+                </tr>
+                </thead>
+                <tbody id="vqResponse">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="name">Proof Live:</label>
+                    <input type="text" id="plStreamId" class="form-control" placeholder="streamId">
+                </div>
+                <button id="sendProofLive" class="btn btn-default" type="submit">Send</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <table id="proofLiveResponse" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Proof Live</th>
+                </tr>
+                </thead>
+                <tbody id="plResponse">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="name">Ids Front Extractor:</label>
+                    <input type="text" id="ifeStreamId" class="form-control" placeholder="streamId">
+                </div>
+                <button id="sendIdsFrontExtractor" class="btn btn-default" type="submit">Send</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <table id="idsFrontExtractorResponse" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Ids Front Extractor</th>
+                </tr>
+                </thead>
+                <tbody id="ifeResponse">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="name">Ids Front Extractor:</label>
+                    <input type="text" id="vosStreamId" class="form-control" placeholder="streamId">
+                </div>
+                <button id="sendValidateOtpSpeech" class="btn btn-default" type="submit">Send</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <table id="validateOtpSpeechResponse" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Ids Front Extractor</th>
+                </tr>
+                </thead>
+                <tbody id="vosResponse">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
