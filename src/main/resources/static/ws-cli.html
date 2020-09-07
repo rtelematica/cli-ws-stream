@@ -65,7 +65,7 @@
             <table id="videoQualityResponse" class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Video Quality</th>
+                    <th>Video Quality Response:</th>
                 </tr>
                 </thead>
                 <tbody id="vqResponse">
@@ -87,7 +87,7 @@
             <table id="proofLiveResponse" class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Proof Live</th>
+                    <th>Proof Live Response: </th>
                 </tr>
                 </thead>
                 <tbody id="plResponse">
@@ -109,7 +109,7 @@
             <table id="idsFrontExtractorResponse" class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Ids Front Extractor</th>
+                    <th>Ids Front Extractor Response:</th>
                 </tr>
                 </thead>
                 <tbody id="ifeResponse">
@@ -121,7 +121,7 @@
         <div class="col-md-6">
             <form class="form-inline">
                 <div class="form-group">
-                    <label for="name">Ids Front Extractor:</label>
+                    <label for="name">Validate Otp Speech:</label>
                     <input type="text" id="vosStreamId" class="form-control" placeholder="streamId">
                 </div>
                 <button id="sendValidateOtpSpeech" class="btn btn-default" type="submit">Send</button>
@@ -131,10 +131,32 @@
             <table id="validateOtpSpeechResponse" class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Ids Front Extractor</th>
+                    <th>Validate Otp Speech Response:</th>
                 </tr>
                 </thead>
                 <tbody id="vosResponse">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="name">Face Recognition:</label>
+                    <input type="text" id="frStreamId" class="form-control" placeholder="streamId">
+                </div>
+                <button id="sendFaceRecognition" class="btn btn-default" type="submit">Send</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <table id="faceRecognitionResponse" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Face Recognition Response:</th>
+                </tr>
+                </thead>
+                <tbody id="frResponse">
                 </tbody>
             </table>
         </div>

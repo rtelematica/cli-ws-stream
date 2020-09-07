@@ -2,6 +2,7 @@ package com.walkoding.cliwsstream;
 
 
 import com.nova.orto.cognitiveservice.CognitiveResponse;
+import com.nova.orto.cognitiveservice.Data;
 import com.nova.orto.cognitiveservice.Indicator;
 import com.walkoding.cliwsstream.dto.FlowStreamDTO;
 import com.walkoding.cliwsstream.dto.HelloMessageDTO;
@@ -17,9 +18,9 @@ public class FlowStepStreamWS {
 
     private final Logger log = LoggerFactory.getLogger(FlowStepStreamWS.class);
 
-	private final SimpMessagingTemplate simpMessagingTemplate;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
-	private final String VQ_PORT = "50050";
+    private final String VQ_PORT = "50050";
     private final String PL_PORT = "50051";
     private final String IE_PORT = "50052";
     private final String AE_PORT = "50053";
@@ -27,33 +28,46 @@ public class FlowStepStreamWS {
     private final String VOS_PORT = "50055";
     private final String AC_PORT = "50056";
 
-	//private static final String PATH = "127.0.0.1";
+    //private static final String PATH = "127.0.0.1";
     private static final String PATH = "ec2-34-217-62-166.us-west-2.compute.amazonaws.com";
 
     private static final String STREAM_URL = "rtmp://172.31.13.9:1935/live/";
 
-	public FlowStepStreamWS(SimpMessagingTemplate simpMessagingTemplate) {
-	    this.simpMessagingTemplate = simpMessagingTemplate;
+    public FlowStepStreamWS(SimpMessagingTemplate simpMessagingTemplate) {
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
-	@MessageMapping("/hello")
-	//@SendTo("/topic/greetings")
-	public void greeting(HelloMessageDTO message) throws Exception {
-		simpMessagingTemplate.convertAndSend("/topic/greetings", "Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
-	}
+    @MessageMapping("/hello")
+    //@SendTo("/topic/greetings")
+    public void greeting(HelloMessageDTO message) throws Exception {
+        simpMessagingTemplate.convertAndSend("/topic/greetings", "Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
+    }
 
     @MessageMapping("/flows/streams/steps/_video_quality")
     public void stepVideoQuality(FlowStreamDTO flowStreamDTO) {
         log.debug("REST request to step VideoQuality: {}", flowStreamDTO);
 
 
-        for(int i = 1; i < 10; i++ ) {
+        try {
+            Thread.sleep(1000);
             CognitiveResponse response = CognitiveResponse.newBuilder()
                     .setType(CognitiveResponse.Type.INDICATOR)
-                    .setIndicator(Indicator.newBuilder().setMessage("My message").build())
-                    .build();
+                    .setIndicator(Indicator.newBuilder().setType(1).setMessage("Starting cognitive process").build()).build();
+
             log.debug("CS VideoQuality Response: {}", response);
             simpMessagingTemplate.convertAndSend("/topic/video-quality", "Quality Response: " + response);
+
+            Thread.sleep(1000);
+
+            response = CognitiveResponse.newBuilder()
+                    .setType(CognitiveResponse.Type.INDICATOR)
+                    .setIndicator(Indicator.newBuilder().setType(5).setMessage("Error: Empty source").build()).build();
+            log.debug("CS VideoQuality Response: {}", response);
+            simpMessagingTemplate.convertAndSend("/topic/video-quality", "Quality Response: " + response);
+
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -134,18 +148,47 @@ public class FlowStepStreamWS {
     public void stepFaceRecognition(FlowStreamDTO flowStreamDTO) {
         log.debug("REST request to step FaceRecognition: {}", flowStreamDTO);
 
-//        StepFaceRecognitionDTO dto = new StepFaceRecognitionDTO();
-//        dto.setMetadata(new StepMetadataDTO(true));
-//
-//        String target = PATH + ":" + FR_PORT;
-//        CognitiveService cognitiveService = new CognitiveService(target, STREAM_URL, CognitiveRequest.Type.FACE_RECOGNITION, 15, true);
-//        Iterator<CognitiveResponse> responses = cognitiveService.process2(flowStreamDTO.getStreamId());
-//
-//        for(int i = 1; responses.hasNext(); i++ ) {
-//            CognitiveResponse response = responses.next();
-//            log.debug("CS Response: {}", response);
-//            simpMessagingTemplate.convertAndSend("/topic/face-recognition", "Ids Face Recognition Response: " + response);
-//        }
+        try {
+            Thread.sleep(1000);
+            CognitiveResponse response = CognitiveResponse.newBuilder()
+                    .setType(CognitiveResponse.Type.INDICATOR)
+                    .setIndicator(Indicator.newBuilder().setType(1).setMessage("Starting cognitive process").build()).build();
+            log.debug("CS FaceRecognition Response: {}", response);
+            simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + response);
+
+            for(int i = 0; i < 9; i++) {
+                Thread.sleep(1000);
+                response = CognitiveResponse.newBuilder()
+                        .setType(CognitiveResponse.Type.INDICATOR)
+                        .setIndicator(Indicator.newBuilder().setType(5).setMessage("Error: Empty source").build()).build();
+                log.debug("CS FaceRecognition Response: {}", response);
+                simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + response);
+            }
+
+            Thread.sleep(1000);
+            response = CognitiveResponse.newBuilder()
+                    .setType(CognitiveResponse.Type.INDICATOR)
+                    .setIndicator(Indicator.newBuilder().setType(3).setMessage("Start processing of frames").build()).build();
+            log.debug("CS FaceRecognition Response: {}", response);
+            simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + response);
+
+            Thread.sleep(1000);
+            response = CognitiveResponse.newBuilder()
+                    .setType(CognitiveResponse.Type.DATA)
+                    .setData(Data.newBuilder().setDataJSON("{\"success\": true}").build()).build();
+            log.debug("CS FaceRecognition Response: {}", response);
+            simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + response);
+
+            Thread.sleep(1000);
+            response = CognitiveResponse.newBuilder()
+                    .setType(CognitiveResponse.Type.INDICATOR)
+                    .setIndicator(Indicator.newBuilder().setType(3).setMessage("Start processing of frames").build()).build();
+            log.debug("CS FaceRecognition Response: {}", response);
+            simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + response);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @MessageMapping("/flows/streams/steps/_validate_otp_speech")
