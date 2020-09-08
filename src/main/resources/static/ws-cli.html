@@ -205,6 +205,28 @@
             </table>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="name">Address Extractor:</label>
+                    <input type="text" id="aeStreamId" class="form-control" placeholder="streamId">
+                </div>
+                <button id="sendAddressExtractor" class="btn btn-default" type="submit">Send</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <table id="addressExtractorResponse" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Address Extractor Response:</th>
+                </tr>
+                </thead>
+                <tbody id="aeResponse">
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 </body>
 </html>

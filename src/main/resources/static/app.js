@@ -44,6 +44,9 @@ function connect() {
         stompClient.subscribe('/topic/accept-contract', function (acceptContract) {
             showAcceptContract(acceptContract.body);
         });
+        stompClient.subscribe('/topic/address-extractor', function (addressExtractor) {
+            showAddressExtractor(addressExtractor.body);
+        });
 
     });
 }
@@ -89,6 +92,11 @@ function sendAcceptContract() {
     stompClient.send("/api/ws/flows/streams/steps/_accept_contract", {}, JSON.stringify({'flowId': "1234", "streamId": $("#acStreamId").val()}));
 }
 
+function sendAddressExtractor() {
+    stompClient.send("/api/ws/flows/streams/steps/_address_extractor", {}, JSON.stringify({'flowId': "1234", "streamId": $("#aeStreamId").val()}));
+}
+
+
 function showGreeting(message) {
     $("#greetings").append("<tr><td>" + message + "</td></tr>");
 }
@@ -121,6 +129,10 @@ function showAcceptContract(message) {
     $("#acResponse").append("<tr><td>" + message + "</td></tr>");
 }
 
+function showAddressExtractor(message) {
+    $("#aeResponse").append("<tr><td>" + message + "</td></tr>");
+}
+
 
 $(function () {
     $("form").on('submit', function (e) {
@@ -136,6 +148,6 @@ $(function () {
     $( "#sendValidateOtpSpeech" ).click(function() { sendValidateOtpSpeech(); });
     $( "#sendFaceRecognition" ).click(function() { sendFaceRecognition(); });
     $( "#sendAcceptContract" ).click(function() { sendAcceptContract(); });
-
+    $( "#sendAddressExtractor" ).click(function() { sendAddressExtractor(); });
 });
 

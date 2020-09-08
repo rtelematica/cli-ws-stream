@@ -134,18 +134,70 @@ public class FlowStepStreamWS {
     public void stepAddressExtractor(FlowStreamDTO flowStreamDTO) {
         log.debug("REST request to step AddressExtractor: {}", flowStreamDTO);
 
-//        StepAddressExtractorDTO dto = new StepAddressExtractorDTO();
-//        dto.setMetadata(new StepMetadataDTO(true));
-//
-//        String target = PATH + ":" + AE_PORT;
-//        CognitiveService cognitiveService = new CognitiveService(target, STREAM_URL, CognitiveRequest.Type.ADDRESS_EXTRACTOR, 15, true);
-//        Iterator<CognitiveResponse> responses = cognitiveService.process2(flowStreamDTO.getStreamId());
-//
-//        for(int i = 1; responses.hasNext(); i++ ) {
-//            CognitiveResponse response = responses.next();
-//            log.debug("CS Response: {}", response);
-//            simpMessagingTemplate.convertAndSend("/topic/address-extractor", "Address Extractor Response: " + response);
-//        }
+        try {
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+            Thread.sleep(1000);
+            CognitiveWSResponse wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 1;
+            wsRes.indicator.message = "Starting cognitive process";
+            String json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/address-extractor", "" + json);
+
+            Thread.sleep(1000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 3;
+            wsRes.indicator.message = "Start processing of frames";
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/address-extractor", "" + json);
+
+            Thread.sleep(5000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.DATA;
+            wsRes.data = new WData();
+            wsRes.data.dataJSON = new DataJSON();
+            wsRes.data.dataJSON.success = true;
+            wsRes.data.dataJSON.address = getAddress();
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/address-extractor", json);
+
+            Thread.sleep(4000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 6;
+            wsRes.indicator.message = "End of cognitive process";
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/address-extractor", "" + json);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch(JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private WSAddress getAddress() {
+        WSAddress address =  new WSAddress();
+        address.streetName = "street";
+        address.externalNumber = "123";
+        address.internalNumber = "d45";
+        address.neighborhood = "condesa";
+        address.municipally = "tlalapan";
+        address.postalCode = "55140";
+        address.city = "cdmx";
+        address.state = "state";
+        address.city = "méxico";
+
+        return address;
     }
 
     @MessageMapping("/flows/streams/steps/_ids_front_extractor")
@@ -485,6 +537,7 @@ public class FlowStepStreamWS {
     public static class DataJSON {
         public boolean success;
         public UserData userData;
+        public WSAddress address;
     }
 
     public static class UserData {
@@ -541,5 +594,26 @@ public class FlowStepStreamWS {
             public String identificationNumber;
         }
 
+    }
+
+    public static class WSAddress {
+
+        public String streetName;
+
+        public String externalNumber;
+
+        public String internalNumber;
+
+        public String neighborhood;
+
+        public String postalCode;
+
+        public String municipally;
+
+        public String city;
+
+        public String state;
+
+        public String country;
     }
 }
