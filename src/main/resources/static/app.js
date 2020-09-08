@@ -32,11 +32,17 @@ function connect() {
         stompClient.subscribe('/topic/ids-front-extractor', function (idsFrontExtractor) {
           showIdsFrontExtractor(idsFrontExtractor.body);
         });
+        stompClient.subscribe('/topic/ids-back-extractor', function (idsBackExtractor) {
+            showIdsBackExtractor(idsBackExtractor.body);
+        });
         stompClient.subscribe('/topic/validate-otp-speech', function (validateOptSpeech) {
           showValidateOtpSpeech(validateOptSpeech.body);
         });
-        stompClient.subscribe('/topic/face-recognition', function (validateOptSpeech) {
-            showFaceRecognition(validateOptSpeech.body);
+        stompClient.subscribe('/topic/face-recognition', function (faceRecognition) {
+            showFaceRecognition(faceRecognition.body);
+        });
+        stompClient.subscribe('/topic/accept-contract', function (acceptContract) {
+            showAcceptContract(acceptContract.body);
         });
 
     });
@@ -66,12 +72,21 @@ function sendIdsFrontExtractor() {
   stompClient.send("/api/ws/flows/streams/steps/_ids_front_extractor", {}, JSON.stringify({'flowId': "1234", "streamId": $("#ifeStreamId").val()}));
 }
 
+function sendIdsBackExtractor() {
+    stompClient.send("/api/ws/flows/streams/steps/_ids_back_extractor", {}, JSON.stringify({'flowId': "1234", "streamId": $("#ibeStreamId").val()}));
+}
+
+
 function sendValidateOtpSpeech() {
   stompClient.send("/api/ws/flows/streams/steps/_validate_otp_speech", {}, JSON.stringify({'flowId': "1234", "streamId": $("#vosStreamId").val()}));
 }
 
 function sendFaceRecognition() {
     stompClient.send("/api/ws/flows/streams/steps/_face_recognition", {}, JSON.stringify({'flowId': "1234", "streamId": $("#frStreamId").val()}));
+}
+
+function sendAcceptContract() {
+    stompClient.send("/api/ws/flows/streams/steps/_accept_contract", {}, JSON.stringify({'flowId': "1234", "streamId": $("#acStreamId").val()}));
 }
 
 function showGreeting(message) {
@@ -90,12 +105,20 @@ function showIdsFrontExtractor(message) {
   $("#ifeResponse").append("<tr><td>" + message + "</td></tr>");
 }
 
+function showIdsBackExtractor(message) {
+    $("#ibeResponse").append("<tr><td>" + message + "</td></tr>");
+}
+
 function showValidateOtpSpeech(message) {
   $("#vosResponse").append("<tr><td>" + message + "</td></tr>");
 }
 
 function showFaceRecognition(message) {
     $("#frResponse").append("<tr><td>" + message + "</td></tr>");
+}
+
+function showAcceptContract(message) {
+    $("#acResponse").append("<tr><td>" + message + "</td></tr>");
 }
 
 
@@ -109,7 +132,10 @@ $(function () {
     $( "#sendProofLive" ).click(function() { sendProofLive(); });
     $( "#sendVideoQuality" ).click(function() { sendVideoQuality(); });
     $( "#sendIdsFrontExtractor" ).click(function() { sendIdsFrontExtractor(); });
+    $( "#sendIdsBackExtractor" ).click(function() { sendIdsBackExtractor(); });
     $( "#sendValidateOtpSpeech" ).click(function() { sendValidateOtpSpeech(); });
     $( "#sendFaceRecognition" ).click(function() { sendFaceRecognition(); });
+    $( "#sendAcceptContract" ).click(function() { sendAcceptContract(); });
+
 });
 

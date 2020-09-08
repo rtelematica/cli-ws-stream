@@ -121,6 +121,28 @@
         <div class="col-md-6">
             <form class="form-inline">
                 <div class="form-group">
+                    <label for="name">Ids Back Extractor:</label>
+                    <input type="text" id="ibeStreamId" class="form-control" placeholder="streamId">
+                </div>
+                <button id="sendIdsBackExtractor" class="btn btn-default" type="submit">Send</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <table id="idsBackExtractorResponse" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Ids Front Extractor Response:</th>
+                </tr>
+                </thead>
+                <tbody id="ibeResponse">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
                     <label for="name">Validate Otp Speech:</label>
                     <input type="text" id="vosStreamId" class="form-control" placeholder="streamId">
                 </div>
@@ -157,6 +179,28 @@
                 </tr>
                 </thead>
                 <tbody id="frResponse">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="name">Accept Contract:</label>
+                    <input type="text" id="acStreamId" class="form-control" placeholder="streamId">
+                </div>
+                <button id="sendAcceptContract" class="btn btn-default" type="submit">Send</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <table id="acceptContractResponse" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Accept Contract Response:</th>
+                </tr>
+                </thead>
+                <tbody id="acResponse">
                 </tbody>
             </table>
         </div>

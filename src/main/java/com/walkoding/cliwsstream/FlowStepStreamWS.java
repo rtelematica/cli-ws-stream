@@ -80,19 +80,54 @@ public class FlowStepStreamWS {
     public void stepProofLive(FlowStreamDTO flowStreamDTO) {
         log.debug("REST request to step ProofLive: {}", flowStreamDTO);
 
-//        StepProofLiveDTO dto = new StepProofLiveDTO();
-//        dto.setMetadata(new StepMetadataDTO(true));
-//
-//        String target = PATH + ":" + PL_PORT;
-//        CognitiveService cognitiveService = new CognitiveService(target, STREAM_URL, CognitiveRequest.Type.PROOF_LIVE, 15, true);
-//        Iterator<CognitiveResponse> responses = cognitiveService.process2(flowStreamDTO.getStreamId());
-//
-//        for(int i = 1; responses.hasNext(); i++ ) {
-//            CognitiveResponse response = responses.next();
-//            log.debug("CS Response: {}", response);
-//
-//            simpMessagingTemplate.convertAndSend("/topic/proof-live", "ProofLive Response: " + response);
-//        }
+        try {
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+            Thread.sleep(1000);
+            CognitiveWSResponse wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 1;
+            wsRes.indicator.message = "Starting cognitive process";
+            String json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/proof-live", "" + json);
+
+            Thread.sleep(1000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 3;
+            wsRes.indicator.message = "Start processing of frames";
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/proof-live", "" + json);
+
+            Thread.sleep(5000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.DATA;
+            wsRes.data = new WData();
+            wsRes.data.dataJSON = new DataJSON();
+            wsRes.data.dataJSON.success = true;
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/proof-live", json);
+
+            Thread.sleep(4000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 6;
+            wsRes.indicator.message = "End of cognitive process";
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/proof-live", "" + json);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch(JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     @MessageMapping("/flows/streams/steps/_address_extractor")
@@ -226,7 +261,7 @@ public class FlowStepStreamWS {
             System.out.println("CS IdsFrontExtractor Response: " + json);
             simpMessagingTemplate.convertAndSend("/topic/ids-back-extractor", "" + json);
 
-            Thread.sleep(1000);
+            Thread.sleep(3000);
             wsRes = new CognitiveWSResponse();
             wsRes.type = CType.INDICATOR;
             wsRes.indicator = new WIndicator();
@@ -236,18 +271,17 @@ public class FlowStepStreamWS {
             System.out.println("CS IdsFrontExtractor Response: " + json);
             simpMessagingTemplate.convertAndSend("/topic/ids-back-extractor", "" + json);
 
-            Thread.sleep(5000);
+            Thread.sleep(8000);
             wsRes = new CognitiveWSResponse();
             wsRes.type = CType.DATA;
             wsRes.data = new WData();
             wsRes.data.dataJSON = new DataJSON();
             wsRes.data.dataJSON.success = true;
-            wsRes.data.dataJSON.userData = getUserData();
             json = ow.writeValueAsString(wsRes);
             System.out.println("CS IdsFrontExtractor Response: " + json);
             simpMessagingTemplate.convertAndSend("/topic/ids-back-extractor", json);
 
-            Thread.sleep(4000);
+            Thread.sleep(2000);
             wsRes = new CognitiveWSResponse();
             wsRes.type = CType.INDICATOR;
             wsRes.indicator = new WIndicator();
@@ -281,7 +315,7 @@ public class FlowStepStreamWS {
             System.out.println("CS FaceRecognition Response: " + json);
             simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + json);
 
-            Thread.sleep(1000);
+            Thread.sleep(3000);
             wsRes = new CognitiveWSResponse();
             wsRes.type = CType.INDICATOR;
             wsRes.indicator = new WIndicator();
@@ -291,7 +325,7 @@ public class FlowStepStreamWS {
             System.out.println("CS FaceRecognition Response: " + json);
             simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + json);
 
-            Thread.sleep(5000);
+            Thread.sleep(8000);
             wsRes = new CognitiveWSResponse();
             wsRes.type = CType.DATA;
             wsRes.data = new WData();
@@ -301,7 +335,7 @@ public class FlowStepStreamWS {
             System.out.println("CS FaceRecognition Response: " + json);
             simpMessagingTemplate.convertAndSend("/topic/face-recognition", json);
 
-            Thread.sleep(4000);
+            Thread.sleep(2000);
             wsRes = new CognitiveWSResponse();
             wsRes.type = CType.INDICATOR;
             wsRes.indicator = new WIndicator();
@@ -322,36 +356,108 @@ public class FlowStepStreamWS {
     public void stepValidateOtpSpeech(FlowStreamDTO flowStreamDTO) {
         log.debug("REST request to step ValidateOtpSpeech: {}", flowStreamDTO);
 
-//        StepValidateSpeechOtpDTO dto = new StepValidateSpeechOtpDTO();
-//        dto.setMetadata(new StepMetadataDTO(true));
-//
-//        String target = PATH + ":" + VOS_PORT;
-//        CognitiveService cognitiveService = new CognitiveService(target, STREAM_URL, CognitiveRequest.Type.SPEECH_TEXT, 20, true);
-//        Iterator<CognitiveResponse> responses = cognitiveService.process2(flowStreamDTO.getStreamId());
-//
-//        for(int i = 1; responses.hasNext(); i++ ) {
-//            CognitiveResponse response = responses.next();
-//            log.debug("CS Response: {}", response);
-//            simpMessagingTemplate.convertAndSend("/topic/validate-otp-speech", "Ids Face Recognition Response: " + response);
-//        }
+        try {
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+            Thread.sleep(1000);
+            CognitiveWSResponse wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 1;
+            wsRes.indicator.message = "Starting cognitive process";
+            String json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/validate-otp-speech", "" + json);
+
+            Thread.sleep(3000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 3;
+            wsRes.indicator.message = "Start processing of frames";
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/validate-otp-speech", "" + json);
+
+            Thread.sleep(8000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.DATA;
+            wsRes.data = new WData();
+            wsRes.data.dataJSON = new DataJSON();
+            wsRes.data.dataJSON.success = true;
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/validate-otp-speech", json);
+
+            Thread.sleep(2000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 6;
+            wsRes.indicator.message = "End of cognitive process";
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/validate-otp-speech", "" + json);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch(JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     @MessageMapping("/flows/streams/steps/_accept_contract")
     public void stepAcceptContract(FlowStreamDTO flowStreamDTO) {
         log.debug("REST request to step AcceptContract: {}", flowStreamDTO);
 
-//        StepAcceptContractDTO dto = new StepAcceptContractDTO();
-//        dto.setMetadata(new StepMetadataDTO(true));
-//
-//        String target = PATH + ":" + VOS_PORT;
-//        CognitiveService cognitiveService = new CognitiveService(target, STREAM_URL, CognitiveRequest.Type.SPEECH_TEXT, 15, true);
-//        Iterator<CognitiveResponse> responses = cognitiveService.process2(flowStreamDTO.getStreamId());
-//
-//        for(int i = 1; responses.hasNext(); i++ ) {
-//            CognitiveResponse response = responses.next();
-//            log.debug("CS Response: {}", response);
-//            simpMessagingTemplate.convertAndSend("/topic/validate-otp-speech", "Ids Face Recognition Response: " + response);
-//        }
+        try {
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+            Thread.sleep(1000);
+            CognitiveWSResponse wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 1;
+            wsRes.indicator.message = "Starting cognitive process";
+            String json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/accept-contract", "" + json);
+
+            Thread.sleep(3000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 3;
+            wsRes.indicator.message = "Start processing of frames";
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/accept-contract", "" + json);
+
+            Thread.sleep(8000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.DATA;
+            wsRes.data = new WData();
+            wsRes.data.dataJSON = new DataJSON();
+            wsRes.data.dataJSON.success = true;
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/accept-contract", json);
+
+            Thread.sleep(2000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 6;
+            wsRes.indicator.message = "End of cognitive process";
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/accept-contract", "" + json);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch(JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     public enum CType {
