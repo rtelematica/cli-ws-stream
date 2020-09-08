@@ -5,16 +5,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.nova.orto.cognitiveservice.CognitiveResponse;
-import com.nova.orto.cognitiveservice.Data;
 import com.nova.orto.cognitiveservice.Indicator;
 import com.walkoding.cliwsstream.dto.FlowStreamDTO;
 import com.walkoding.cliwsstream.dto.HelloMessageDTO;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.util.HtmlUtils;
+
+import java.time.LocalDate;
 
 @Controller
 public class FlowStepStreamWS {
@@ -115,36 +117,151 @@ public class FlowStepStreamWS {
     public void stepIdsFrontExtractor(FlowStreamDTO flowStreamDTO) {
         log.debug("REST request to step IdsFrontExtractor: {}", flowStreamDTO);
 
-//        StepIdsFrontExtractorDTO dto = new StepIdsFrontExtractorDTO();
-//        dto.setMetadata(new StepMetadataDTO(true));
-//
-//        String target = PATH + ":" + IE_PORT;
-//        CognitiveService cognitiveService = new CognitiveService(target, STREAM_URL, CognitiveRequest.Type.IDS_EXTRACTOR, 15, true);
-//        Iterator<CognitiveResponse> responses = cognitiveService.process2(flowStreamDTO.getStreamId());
-//
-//        for(int i = 1; responses.hasNext(); i++ ) {
-//            CognitiveResponse response = responses.next();
-//            log.debug("CS Response: {}", response);
-//            simpMessagingTemplate.convertAndSend("/topic/ids-front-extractor", "Ids Front Extractor Response: " + response);
-//        }
+        try {
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+            Thread.sleep(1000);
+            CognitiveWSResponse wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 1;
+            wsRes.indicator.message = "Starting cognitive process";
+            String json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/ids-front-extractor", "" + json);
+
+//            for(int i = 0; i < 9; i++) {
+//                Thread.sleep(1000);
+//                wsRes = new CognitiveWSResponse();
+//                wsRes.type = CType.INDICATOR;
+//                wsRes.indicator = new WIndicator();
+//                wsRes.indicator.type = 5;
+//                wsRes.indicator.message = "Error: Empty source";
+//                json = ow.writeValueAsString(wsRes);
+//                System.out.println("CS FaceRecognition Response: " + json);
+//                simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + json);
+//            }
+
+            Thread.sleep(1000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 3;
+            wsRes.indicator.message = "Start processing of frames";
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/ids-front-extractor", "" + json);
+
+            Thread.sleep(5000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.DATA;
+            wsRes.data = new WData();
+            wsRes.data.dataJSON = new DataJSON();
+            wsRes.data.dataJSON.success = true;
+            wsRes.data.dataJSON.userData = getUserData();
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/ids-front-extractor", json);
+
+            Thread.sleep(4000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 6;
+            wsRes.indicator.message = "End of cognitive process";
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/ids-front-extractor", "" + json);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch(JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private UserData getUserData() {
+        UserData ud = new UserData();
+        ud.address =  new UserData.Address();
+        ud.customerName = new UserData.CustomerName();
+        ud.customerData = new UserData.CustomerData();
+
+        ud.customerName.name = "Example";
+        ud.customerName.lastName = "Of";
+        ud.customerName.motherLastName = "Websockets";
+
+        ud.address.street = "street";
+        ud.address.externalNumber = "12";
+        ud.address.internalNumber = "C413";
+        ud.address.city = "city";
+        ud.address.municipality = "municipality";
+        ud.address.neighborhood = "neighborhood";
+        ud.address.postalCode = "55140";
+        ud.address.state = "cdmx";
+        ud.address.country = "méxico";
+
+        ud.customerData.birthDate = LocalDate.now();
+        ud.customerData.curp = "GHYT45124578";
+        ud.customerData.gender = "M";
+        ud.customerData.identificationNumber = "1234567899876";
+        ud.customerData.placeBirth = "méxico";
+
+        return ud;
     }
 
     @MessageMapping("/flows/streams/steps/_ids_back_extractor")
     public void stepIdsBackExtractor(FlowStreamDTO flowStreamDTO) {
         log.debug("REST request to step IdsBackExtractor: {}", flowStreamDTO);
 
-//        StepIdsBackExtractorDTO dto = new StepIdsBackExtractorDTO();
-//        dto.setMetadata(new StepMetadataDTO(true));
-//
-//        String target = PATH + ":" + IE_PORT;
-//        CognitiveService cognitiveService = new CognitiveService(target, STREAM_URL, CognitiveRequest.Type.IDS_EXTRACTOR, 15, true);
-//        Iterator<CognitiveResponse> responses = cognitiveService.process2(flowStreamDTO.getStreamId());
-//
-//        for(int i = 1; responses.hasNext(); i++ ) {
-//            CognitiveResponse response = responses.next();
-//            log.debug("CS Response: {}", response);
-//            simpMessagingTemplate.convertAndSend("/topic/ids-back-extractor", "Ids Back Extractor Response: " + response);
-//        }
+        try {
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+            Thread.sleep(1000);
+            CognitiveWSResponse wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 1;
+            wsRes.indicator.message = "Starting cognitive process";
+            String json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/ids-back-extractor", "" + json);
+
+            Thread.sleep(1000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 3;
+            wsRes.indicator.message = "Start processing of frames";
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/ids-back-extractor", "" + json);
+
+            Thread.sleep(5000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.DATA;
+            wsRes.data = new WData();
+            wsRes.data.dataJSON = new DataJSON();
+            wsRes.data.dataJSON.success = true;
+            wsRes.data.dataJSON.userData = getUserData();
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/ids-back-extractor", json);
+
+            Thread.sleep(4000);
+            wsRes = new CognitiveWSResponse();
+            wsRes.type = CType.INDICATOR;
+            wsRes.indicator = new WIndicator();
+            wsRes.indicator.type = 6;
+            wsRes.indicator.message = "End of cognitive process";
+            json = ow.writeValueAsString(wsRes);
+            System.out.println("CS IdsFrontExtractor Response: " + json);
+            simpMessagingTemplate.convertAndSend("/topic/ids-back-extractor", "" + json);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch(JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     @MessageMapping("/flows/streams/steps/_face_recognition")
@@ -163,18 +280,6 @@ public class FlowStepStreamWS {
             String json = ow.writeValueAsString(wsRes);
             System.out.println("CS FaceRecognition Response: " + json);
             simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + json);
-
-//            for(int i = 0; i < 9; i++) {
-//                Thread.sleep(1000);
-//                wsRes = new CognitiveWSResponse();
-//                wsRes.type = CType.INDICATOR;
-//                wsRes.indicator = new WIndicator();
-//                wsRes.indicator.type = 5;
-//                wsRes.indicator.message = "Error: Empty source";
-//                json = ow.writeValueAsString(wsRes);
-//                System.out.println("CS FaceRecognition Response: " + json);
-//                simpMessagingTemplate.convertAndSend("/topic/face-recognition", "" + json);
-//            }
 
             Thread.sleep(1000);
             wsRes = new CognitiveWSResponse();
@@ -273,5 +378,62 @@ public class FlowStepStreamWS {
 
     public static class DataJSON {
         public boolean success;
+        public UserData userData;
+    }
+
+    public static class UserData {
+
+        public CustomerName customerName;
+
+        public Address address;
+
+        public CustomerData customerData;
+
+        public static class CustomerName {
+
+
+            public String name;
+
+            public String lastName;
+
+            public String motherLastName;
+        }
+
+
+        public static class Address {
+
+            public String street;
+
+            public String externalNumber;
+
+            public String internalNumber;
+
+            public String neighborhood;
+
+            public String postalCode;
+
+            public String municipality;
+
+            public String city;
+
+            public String state;
+
+            public String country;
+        }
+
+
+        public static class CustomerData {
+
+            public LocalDate birthDate;
+
+            public String  placeBirth;
+
+            public String gender;
+
+            public String curp;
+
+            public String identificationNumber;
+        }
+
     }
 }
