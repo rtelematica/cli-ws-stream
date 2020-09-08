@@ -193,8 +193,8 @@ public class CognitiveServer {
         }
 
         private Data getProofLiveData(boolean success) {
-            DataJson dataJson = new DataJson();
-            dataJson.success = success;
+            ProofLiveDataJson dataJson = new ProofLiveDataJson();
+            dataJson.Validation = success;
             Data data = Data.newBuilder()
                     .setDataJSON(toJson(dataJson))
                     .addMapEntry(Entry.newBuilder()
@@ -206,7 +206,7 @@ public class CognitiveServer {
         }
 
         private Data getFaceRecognitionData() {
-            ProofLiveDataJson dataJson = new ProofLiveDataJson();
+            FaceRecognitionDataJson dataJson = new FaceRecognitionDataJson();
             dataJson.Coincidence = 1 / randomBetweenInt(1, 100) * 100;
             Data data = Data.newBuilder()
                     .setDataJSON(toJson(dataJson))
@@ -310,6 +310,11 @@ public class CognitiveServer {
 
         @lombok.Data
         public static class ProofLiveDataJson {
+            private boolean Validation;
+        }
+
+        @lombok.Data
+        public static class FaceRecognitionDataJson {
             private float Coincidence;
         }
 
