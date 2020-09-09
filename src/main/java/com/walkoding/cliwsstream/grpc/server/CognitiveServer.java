@@ -207,7 +207,8 @@ public class CognitiveServer {
 
         private Data getFaceRecognitionData() {
             FaceRecognitionDataJson dataJson = new FaceRecognitionDataJson();
-            dataJson.Coincidence = 1 / randomBetweenInt(1, 100) * 100;
+            dataJson.Coincidence = randomBetweenInt(1, 100) / 100F * 100;
+            System.out.println("Coincidence: " + dataJson.Coincidence);
             Data data = Data.newBuilder()
                     .setDataJSON(toJson(dataJson))
                     .addMapEntry(Entry.newBuilder()
@@ -267,9 +268,9 @@ public class CognitiveServer {
             dataJson.success = success;
             dataJson.curp = "ABCDEFGHIJKL" + randomBetweenInt(1, 100000);
             dataJson.address = "Javiro 28 Rinconada de Aragon 55140 Ecatepec de Morelos, Méx.";
-            dataJson.birth_date = "20-02-1991";
+            dataJson.birth_date = "20/02/1991";
             dataJson.id = "" + randomBetweenInt(100000, 999999);
-            dataJson.register_date = "20-06-1988";
+            dataJson.register_date = "20/06/1988";
             dataJson.name = "name" + randomBetweenInt(1, 100000);
             dataJson.last_name = "lastname" + randomBetweenInt(1, 100000);
             return dataJson;
