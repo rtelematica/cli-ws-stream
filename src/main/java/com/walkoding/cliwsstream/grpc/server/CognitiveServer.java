@@ -1,5 +1,6 @@
 package com.walkoding.cliwsstream.grpc.server;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -194,7 +195,7 @@ public class CognitiveServer {
 
         private Data getProofLiveData(boolean success) {
             ProofLiveDataJson dataJson = new ProofLiveDataJson();
-            dataJson.Validation = success;
+            dataJson.validation = success;
             Data data = Data.newBuilder()
                     .setDataJSON(toJson(dataJson))
                     .addMapEntry(Entry.newBuilder()
@@ -207,8 +208,8 @@ public class CognitiveServer {
 
         private Data getFaceRecognitionData() {
             FaceRecognitionDataJson dataJson = new FaceRecognitionDataJson();
-            dataJson.Coincidence = randomBetweenInt(1, 100) / 100F * 100;
-            System.out.println("Coincidence: " + dataJson.Coincidence);
+            dataJson.coincidence = randomBetweenInt(1, 100) / 100F * 100;
+            System.out.println("Coincidence: " + dataJson.coincidence);
             Data data = Data.newBuilder()
                     .setDataJSON(toJson(dataJson))
                     .addMapEntry(Entry.newBuilder()
@@ -251,8 +252,7 @@ public class CognitiveServer {
 
         private Data getAddressExtractorData() {
             AddressExtractorDataJson dataJson = new AddressExtractorDataJson();
-            dataJson.success = true;
-            dataJson.Address = "Javiro 28 Rinconada de Aragon 55140 Ecatepec de Morelos, Méx.";
+            dataJson.address = "Javiro 28 Rinconada de Aragon 55140 Ecatepec de Morelos, Méx.";
             Data data = Data.newBuilder()
                     .setDataJSON(toJson(dataJson))
                     .addMapEntry(Entry.newBuilder()
@@ -311,12 +311,15 @@ public class CognitiveServer {
 
         @lombok.Data
         public static class ProofLiveDataJson {
-            private boolean Validation;
+            @JsonProperty("Validation")
+            private boolean validation;
         }
 
         @lombok.Data
         public static class FaceRecognitionDataJson {
-            private float Coincidence;
+
+            @JsonProperty("Coincidence")
+            private float coincidence;
         }
 
         @lombok.Data
@@ -326,8 +329,9 @@ public class CognitiveServer {
 
         @lombok.Data
         public static class AddressExtractorDataJson {
-            private boolean success;
-            private String Address;
+
+            @JsonProperty("Address")
+            private String address;
         }
     }
 }
