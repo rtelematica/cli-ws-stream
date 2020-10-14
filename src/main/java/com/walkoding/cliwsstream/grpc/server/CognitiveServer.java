@@ -10,7 +10,9 @@ import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -124,7 +126,7 @@ public class CognitiveServer {
             }
 
             for (CognitiveResponse cognitiveResponse : cognitiveFlow) {
-                try { Thread.sleep( randomBetweenInt(1, 1) * 1000); } catch (InterruptedException e) {e.printStackTrace();}
+                try { Thread.sleep( randomBetweenInt(1, 10) * 1000); } catch (InterruptedException e) {e.printStackTrace();}
                 responseObserver.onNext(cognitiveResponse);
             }
             responseObserver.onCompleted();
@@ -174,7 +176,7 @@ public class CognitiveServer {
                     .setDataJSON(toJson(dataJson))
                     .addMapEntry(Entry.newBuilder()
                             .setKey("Document")
-                            .addValue(ByteString.copyFromUtf8("IdsFrontImage"))
+                            .addValue(ByteString.copyFrom(getImage("ine_front")))
                             .build()
                     ).build();
             return data;
@@ -187,7 +189,7 @@ public class CognitiveServer {
                     .setDataJSON(toJson(dataJson))
                     .addMapEntry(Entry.newBuilder()
                             .setKey("Document")
-                            .addValue(ByteString.copyFromUtf8("IdsBackImage"))
+                            .addValue(ByteString.copyFrom(getImage("ine_back")))
                             .build()
                     ).build();
             return data;
@@ -200,7 +202,7 @@ public class CognitiveServer {
                     .setDataJSON(toJson(dataJson))
                     .addMapEntry(Entry.newBuilder()
                             .setKey("Sample_frame")
-                            .addValue(ByteString.copyFromUtf8("ProofLiveImage"))
+                            .addValue(ByteString.copyFrom(getImage("rostro")))
                             .build()
                     ).build();
             return data;
@@ -214,11 +216,11 @@ public class CognitiveServer {
                     .setDataJSON(toJson(dataJson))
                     .addMapEntry(Entry.newBuilder()
                             .setKey("Target")
-                            .addValue(ByteString.copyFromUtf8("TargetImage"))
+                            .addValue(ByteString.copyFrom(getImage("parpadeo")))
                             .build())
                     .addMapEntry(Entry.newBuilder()
                             .setKey("Input")
-                            .addValue(ByteString.copyFromUtf8("InputImage"))
+                            .addValue(ByteString.copyFrom(getImage("sonrisa")))
                             .build())
                     .build();
             return data;
@@ -226,25 +228,51 @@ public class CognitiveServer {
 
         private Data getSpeechTextData() {
             SpeechTextDataJson dataJson = new SpeechTextDataJson();
-            dataJson.Transcript = "Este es un texto corto";
+            dataJson.transcript = "Este es un texto corto";
             Data data = Data.newBuilder()
                     .setDataJSON(toJson(dataJson))
                     .addMapEntry(Entry.newBuilder()
                             .setKey("audio")
-                            .addValue(ByteString.copyFromUtf8("speechAudio"))
+                            .addValue(ByteString.copyFrom(getAudio()))
                             .build())
                     .build();
             return data;
         }
-
+        
+        private byte[] getImage(String name) {
+        	
+        	name = "src/main/resources/"+name+".jpg";
+        	File file = new File(name);
+        	 
+        	try {
+				return Files.readAllBytes(file.toPath());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+        }
+        
+        private byte[] getAudio() {
+        	
+        	File file = new File("src/main/resources/audio.mp3");
+        	 
+        	try {
+				return Files.readAllBytes(file.toPath());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+        }
         private Data getAcceptContractData() {
             SpeechTextDataJson dataJson = new SpeechTextDataJson();
-            dataJson.Transcript = "Acepto el contracto";
+            dataJson.transcript = "Acepto el contracto";
             Data data = Data.newBuilder()
                     .setDataJSON(toJson(dataJson))
                     .addMapEntry(Entry.newBuilder()
                             .setKey("audio")
-                            .addValue(ByteString.copyFromUtf8("contractAudio"))
+                            .addValue(ByteString.copyFrom(getAudio()))
                             .build())
                     .build();
             return data;
@@ -257,7 +285,7 @@ public class CognitiveServer {
                     .setDataJSON(toJson(dataJson))
                     .addMapEntry(Entry.newBuilder()
                             .setKey("Image")
-                            .addValue(ByteString.copyFromUtf8("addressExtractorImage"))
+                            .addValue(ByteString.copyFrom(getImage("address")))
                             .build())
                     .build();
             return data;
@@ -324,7 +352,8 @@ public class CognitiveServer {
 
         @lombok.Data
         public static class SpeechTextDataJson {
-            private String Transcript;
+            @JsonProperty("Transcript")
+            private String transcript;
         }
 
         @lombok.Data
